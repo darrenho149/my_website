@@ -150,3 +150,46 @@ ggplot(comparison, aes(x=delta, fill=interval))+
   )
 
 ```
+
+Let's also examine the density plot for temperature deviations per month.
+
+```{r time_month, warning=FALSE}
+#month
+ggplot(comparison, aes(x=delta, fill=month))+
+  geom_density(alpha=0.2) +   #density plot with tranparency set to 20%
+  theme_bw() +                #theme
+  theme(plot.title = element_text(face = "bold")) +
+  labs (
+    title = "Density Plot for Monthly Temperature Anomalies",
+    y     = "Density" , x = "Temperature Deviation"        #changing y-axis label to sentence case
+  )
+```
+
+### Average Annual Temperature Anomalies
+
+```{r time_year, warning=FALSE}
+
+#creating yearly averages
+average_annual_anomaly <- tidyweather %>% 
+  dplyr::group_by(Year) %>%   #grouping data by Year
+  # creating summaries for mean delta 
+  # use `na.rm=TRUE` to eliminate NA (not available) values 
+  dplyr::summarise(annual_average_delta = mean(delta, na.rm=TRUE)) 
+
+#plotting the data:
+ggplot(average_annual_anomaly, aes(x=Year, y= annual_average_delta))+
+  geom_point()+
+  #Fit the best fit line, using LOESS method
+  geom_smooth() +
+  theme(plot.title = element_text(face = "bold")) +
+  #change to theme_bw() to have white background + black frame around plot
+  theme_bw() +
+  labs (
+    title = "Average Yearly Anomaly",
+    y     = "Average Annual Delta", x = "Year"
+  )                       
+
+```
+
+From the above plot, it is also quite evident that from 1960 onwards, there has been an increasing trend in temperature deviations and is slowly reaching an unprecendented scale. Let's all work together, play our role, to keep our world a healthy and beautiful place!
+

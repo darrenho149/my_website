@@ -109,5 +109,40 @@ ggplot(comparison, aes(x=delta, fill=interval))+
     #changing y-axis label to sentence case
   )</code></pre>
 <p><img src="/blogs/Climate_Change_files/figure-html/time_periods-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>Let’s also examine the density plot for temperature deviations per month.</p>
+<pre class="r"><code>#month
+ggplot(comparison, aes(x=delta, fill=month))+
+  geom_density(alpha=0.2) +   #density plot with tranparency set to 20%
+  theme_bw() +                #theme
+  theme(plot.title = element_text(face = &quot;bold&quot;)) +
+  labs (
+    title = &quot;Density Plot for Monthly Temperature Anomalies&quot;,
+    y     = &quot;Density&quot; , x = &quot;Temperature Deviation&quot;        #changing y-axis label to sentence case
+  )</code></pre>
+<p><img src="/blogs/Climate_Change_files/figure-html/time_month-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+<div id="average-annual-temperature-anomalies" class="section level3">
+<h3>Average Annual Temperature Anomalies</h3>
+<pre class="r"><code>#creating yearly averages
+average_annual_anomaly &lt;- tidyweather %&gt;% 
+  dplyr::group_by(Year) %&gt;%   #grouping data by Year
+  # creating summaries for mean delta 
+  # use `na.rm=TRUE` to eliminate NA (not available) values 
+  dplyr::summarise(annual_average_delta = mean(delta, na.rm=TRUE)) 
+
+#plotting the data:
+ggplot(average_annual_anomaly, aes(x=Year, y= annual_average_delta))+
+  geom_point()+
+  #Fit the best fit line, using LOESS method
+  geom_smooth() +
+  theme(plot.title = element_text(face = &quot;bold&quot;)) +
+  #change to theme_bw() to have white background + black frame around plot
+  theme_bw() +
+  labs (
+    title = &quot;Average Yearly Anomaly&quot;,
+    y     = &quot;Average Annual Delta&quot;, x = &quot;Year&quot;
+  )                       </code></pre>
+<p><img src="/blogs/Climate_Change_files/figure-html/time_year-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>From the above plot, it is also quite evident that from 1960 onwards, there has been an increasing trend in temperature deviations and is slowly reaching an unprecendented scale. Let’s all work together, play our role, to keep our world a healthy and beautiful place!</p>
 </div>
 </div>
