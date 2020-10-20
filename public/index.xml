@@ -8,6 +8,16 @@
     <language>en-us</language>
     <lastBuildDate>Tue, 20 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Analysis of Hong Kong&#39;s Airbnb Market</title>
+      <link>/blogs/air_bnb/</link>
+      <pubDate>Tue, 20 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/blogs/air_bnb/</guid>
+      <description>For our final group project, we looked into Airbnbs in Hong Kong and tried to create a regression model to predict the price for 4 nights for two people at an Airbnb. I am originally from Hong Kong, so this analyis was enlightening and fun at the same time as I got to understand more about Hong Kong’s Airbnb market and how different varibles would affect prices.
+For this section, let’s look deeper into Hong Kong’s Airbnb data!</description>
+    </item>
+    
+    <item>
       <title>Analysis of Movies - IMDB Dataset</title>
       <link>/blogs/movies/</link>
       <pubDate>Tue, 20 Oct 2020 00:00:00 +0000</pubDate>

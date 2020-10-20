@@ -38,7 +38,7 @@ disqusShortname = ""
   # Navigation Section
   [params.navigation]
     title = "Darren"
-    #subtitle = "By HTML5 Up"
+    subtitle = "London Business School"
     menu = "Menu"
     # Optional logo as brand stored in img/
     # logo = "logo.png"
@@ -110,10 +110,10 @@ disqusShortname = ""
       url = "blogs/YieldCurve"
 
     [[params.tiles.showcase]]
-      title = "Ipsum"
-      subtitle = "Nisl Sed Aliquam"
-      image = "pic04.jpg"
-      url = "blogs/ipsum"
+      title = "Airbnbs in Hong Kong"
+      subtitle = "Analysis of Hong Kong's Airbnb Market"
+      image = "airbnb.jpg"
+      url = "blogs/air_bnb"
 
     #[[params.tiles.showcase]]
       #title = "Consequat"
@@ -138,13 +138,14 @@ disqusShortname = ""
   # Section Type Two
   [params.two]
     enable = true
-    title = "Massa libero"
-    subtitle = """Nullam et orci eu lorem consequat tincidunt vivamus et sagittis libero. 
-    Mauris aliquet magna magna sed nunc rhoncus pharetra. 
-    Pellentesque condimentum sem. In efficitur ligula tate urna. Maecenas laoreet massa vel lacinia pellentesque lorem ipsum dolor. 
-    Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis libero.
-    Mauris aliquet magna magna sed nunc rhoncus amet pharetra et feugiat tempus."""
-    buttonText = "Get Started"
+    title = "My Profile"
+    subtitle = """ My name is Darren Ho and I am currently a student at London Business School completing a Master in Financial
+    Analysis. I am originally from Hong Kong and completed my undergraduate studies at Cornell University majoring in Operations 
+    Research & Engineering. Throughout my first few weeks at London Business School, I have had a chance to work on multiple 
+    projects in R from my Data Analytics for Finance Class. As I spent more time working with the software, I began to become more and more
+    comfortable and have developed the ability to analyze and visualize datasets effectively, especially through the R Package Tidyverse.
+    I would like to thank Professor Kostis Christodoulou for such a wonderful course and experience."""
+    buttonText = "Take a Look at My Projects"
     url = "blogs"
 
 
@@ -187,7 +188,7 @@ disqusShortname = ""
   # Footer section
   [params.footer]
     enable = true
-    copyright = "Company Name"
+    copyright = "London Business School"
 
     # Uses font awesome icons
     #[[params.footer.social]]

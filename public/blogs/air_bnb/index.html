@@ -1,0 +1,382 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="Darren&#39;s description">
+	<meta name="author" content="Darren">
+	<meta name="generator" content="Hugo 0.75.1" />
+	<title>Analysis of Hong Kong&#39;s Airbnb Market &middot; Darren</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>Darren</strong> <span>London Business School</span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/blogs">Blogs</a></li>
+            
+                <li><a href="/blogs/ipsum">Generic Blog</a></li>
+            
+                <li><a href="/elements.html">Elements</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+                <li><a href="/blogs" class="button special fit">Get Started</a></li>
+            
+            
+                <li><a href="/" class="button fit">Log In</a></li>
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>Analysis of Hong Kong&#39;s Airbnb Market</h1>
+                            </header>
+                            
+                                <span class="image main"><img src="/img/blogs/Airbnb_in_hk.jpg" alt="" /></span>
+                            
+                            
+
+
+<p>For our final group project, we looked into Airbnbs in Hong Kong and tried to create a regression model to predict the price for 4 nights for two people at an Airbnb. I am originally from Hong Kong, so this analyis was enlightening and fun at the same time as I got to understand more about Hong Kong’s Airbnb market and how different varibles would affect prices.</p>
+<p>For this section, let’s look deeper into Hong Kong’s Airbnb data!</p>
+<div id="hong-kong-airbnb-data" class="section level2">
+<h2>Hong Kong Airbnb data</h2>
+<p>Let’s load Hong Kong’s Airbnb data and take a look at the different variables of the dataset.</p>
+<pre class="r"><code>#loading data
+listings &lt;- read.csv(&quot;~/Desktop/CA09 AUT 20 Data Analytics for Finance/GitHub/my_website/data/listings.csv&quot;)
+listings &lt;- listings %&gt;% 
+              clean_names()
+
+glimpse(listings)</code></pre>
+<pre><code>## Rows: 11,187
+## Columns: 106
+## $ id                                           &lt;int&gt; 69074, 75083, 103760, 13…
+## $ listing_url                                  &lt;chr&gt; &quot;https://www.airbnb.com/…
+## $ scrape_id                                    &lt;dbl&gt; 2.02e+13, 2.02e+13, 2.02…
+## $ last_scraped                                 &lt;chr&gt; &quot;2020-06-17&quot;, &quot;2020-06-1…
+## $ name                                         &lt;chr&gt; &quot;Beautiful oasis of plan…
+## $ summary                                      &lt;chr&gt; &quot;An ideal Hong location …
+## $ space                                        &lt;chr&gt; &quot;Filled with plants and …
+## $ description                                  &lt;chr&gt; &quot;An ideal Hong location …
+## $ experiences_offered                          &lt;chr&gt; &quot;none&quot;, &quot;none&quot;, &quot;none&quot;, …
+## $ neighborhood_overview                        &lt;chr&gt; &quot;In the upper part of tr…
+## $ notes                                        &lt;chr&gt; &quot;&quot;, &quot;Once you arrive in …
+## $ transit                                      &lt;chr&gt; &quot;Buses pass often along …
+## $ access                                       &lt;chr&gt; &quot;All access, except one …
+## $ interaction                                  &lt;chr&gt; &quot;If a guest is staying t…
+## $ house_rules                                  &lt;chr&gt; &quot;Everything to make your…
+## $ thumbnail_url                                &lt;lgl&gt; NA, NA, NA, NA, NA, NA, …
+## $ medium_url                                   &lt;lgl&gt; NA, NA, NA, NA, NA, NA, …
+## $ picture_url                                  &lt;chr&gt; &quot;https://a0.muscache.com…
+## $ xl_picture_url                               &lt;lgl&gt; NA, NA, NA, NA, NA, NA, …
+## $ host_id                                      &lt;int&gt; 160139, 304876, 304876, …
+## $ host_url                                     &lt;chr&gt; &quot;https://www.airbnb.com/…
+## $ host_name                                    &lt;chr&gt; &quot;Amy&quot;, &quot;Brend&quot;, &quot;Brend&quot;,…
+## $ host_since                                   &lt;chr&gt; &quot;2010-07-07&quot;, &quot;2010-11-3…
+## $ host_location                                &lt;chr&gt; &quot;Hong Kong&quot;, &quot;Hong Kong&quot;…
+## $ host_about                                   &lt;chr&gt; &quot;I&#39;ve been with AirBnB n…
+## $ host_response_time                           &lt;chr&gt; &quot;within a few hours&quot;, &quot;w…
+## $ host_response_rate                           &lt;chr&gt; &quot;86%&quot;, &quot;100%&quot;, &quot;100%&quot;, &quot;…
+## $ host_acceptance_rate                         &lt;chr&gt; &quot;60%&quot;, &quot;99%&quot;, &quot;99%&quot;, &quot;99…
+## $ host_is_superhost                            &lt;chr&gt; &quot;t&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;,…
+## $ host_thumbnail_url                           &lt;chr&gt; &quot;https://a0.muscache.com…
+## $ host_picture_url                             &lt;chr&gt; &quot;https://a0.muscache.com…
+## $ host_neighbourhood                           &lt;chr&gt; &quot;Sheung Wan&quot;, &quot;Sheung Wa…
+## $ host_listings_count                          &lt;int&gt; 2, 12, 12, 12, 1, 12, 12…
+## $ host_total_listings_count                    &lt;int&gt; 2, 12, 12, 12, 1, 12, 12…
+## $ host_verifications                           &lt;chr&gt; &quot;[&#39;email&#39;, &#39;phone&#39;, &#39;rev…
+## $ host_has_profile_pic                         &lt;chr&gt; &quot;t&quot;, &quot;t&quot;, &quot;t&quot;, &quot;t&quot;, &quot;t&quot;,…
+## $ host_identity_verified                       &lt;chr&gt; &quot;t&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;t&quot;,…
+## $ street                                       &lt;chr&gt; &quot;Sheung Wan, Hong Kong&quot;,…
+## $ neighbourhood                                &lt;chr&gt; &quot;Central &amp; Western Distr…
+## $ neighbourhood_cleansed                       &lt;chr&gt; &quot;Central &amp; Western&quot;, &quot;Ce…
+## $ neighbourhood_group_cleansed                 &lt;lgl&gt; NA, NA, NA, NA, NA, NA, …
+## $ city                                         &lt;chr&gt; &quot;Sheung Wan&quot;, &quot;Sheung Wa…
+## $ state                                        &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;Hong Ko…
+## $ zipcode                                      &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ market                                       &lt;chr&gt; &quot;Hong Kong&quot;, &quot;Hong Kong&quot;…
+## $ smart_location                               &lt;chr&gt; &quot;Sheung Wan, Hong Kong&quot;,…
+## $ country_code                                 &lt;chr&gt; &quot;HK&quot;, &quot;HK&quot;, &quot;HK&quot;, &quot;HK&quot;, …
+## $ country                                      &lt;chr&gt; &quot;Hong Kong&quot;, &quot;Hong Kong&quot;…
+## $ latitude                                     &lt;dbl&gt; 22.3, 22.3, 22.3, 22.3, …
+## $ longitude                                    &lt;dbl&gt; 114, 114, 114, 114, 114,…
+## $ is_location_exact                            &lt;chr&gt; &quot;t&quot;, &quot;t&quot;, &quot;t&quot;, &quot;f&quot;, &quot;t&quot;,…
+## $ property_type                                &lt;chr&gt; &quot;Apartment&quot;, &quot;Apartment&quot;…
+## $ room_type                                    &lt;chr&gt; &quot;Entire home/apt&quot;, &quot;Enti…
+## $ accommodates                                 &lt;int&gt; 3, 3, 6, 6, 2, 6, 6, 2, …
+## $ bathrooms                                    &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, …
+## $ bedrooms                                     &lt;int&gt; 1, 0, 2, 2, 1, 2, 2, 1, …
+## $ beds                                         &lt;int&gt; 2, 2, 3, 3, 1, 3, 3, 1, …
+## $ bed_type                                     &lt;chr&gt; &quot;Real Bed&quot;, &quot;Real Bed&quot;, …
+## $ amenities                                    &lt;chr&gt; &quot;{\&quot;Cable TV\&quot;,Internet,…
+## $ square_feet                                  &lt;int&gt; NA, NA, NA, NA, NA, NA, …
+## $ price                                        &lt;chr&gt; &quot;$1,395.00&quot;, &quot;$783.00&quot;, …
+## $ weekly_price                                 &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ monthly_price                                &lt;chr&gt; &quot;$29,451.00&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;…
+## $ security_deposit                             &lt;chr&gt; &quot;$2,325.00&quot;, &quot;$775.00&quot;, …
+## $ cleaning_fee                                 &lt;chr&gt; &quot;$310.00&quot;, &quot;$271.00&quot;, &quot;$…
+## $ guests_included                              &lt;int&gt; 2, 2, 2, 3, 1, 2, 2, 1, …
+## $ extra_people                                 &lt;chr&gt; &quot;$155.00&quot;, &quot;$155.00&quot;, &quot;$…
+## $ minimum_nights                               &lt;int&gt; 3, 14, 2, 2, 2, 2, 2, 1,…
+## $ maximum_nights                               &lt;int&gt; 365, 365, 365, 365, 60, …
+## $ minimum_minimum_nights                       &lt;int&gt; 3, 14, 2, 2, 2, 2, 2, 1,…
+## $ maximum_minimum_nights                       &lt;int&gt; 4, 14, 2, 2, 2, 2, 2, 1,…
+## $ minimum_maximum_nights                       &lt;int&gt; 365, 365, 365, 365, 60, …
+## $ maximum_maximum_nights                       &lt;int&gt; 365, 365, 365, 365, 60, …
+## $ minimum_nights_avg_ntm                       &lt;dbl&gt; 3.1, 14.0, 2.0, 2.0, 2.0…
+## $ maximum_nights_avg_ntm                       &lt;dbl&gt; 365, 365, 365, 365, 60, …
+## $ calendar_updated                             &lt;chr&gt; &quot;2 months ago&quot;, &quot;7 weeks…
+## $ has_availability                             &lt;chr&gt; &quot;t&quot;, &quot;t&quot;, &quot;t&quot;, &quot;t&quot;, &quot;t&quot;,…
+## $ availability_30                              &lt;int&gt; 0, 0, 0, 14, 0, 8, 9, 30…
+## $ availability_60                              &lt;int&gt; 23, 0, 0, 44, 15, 33, 39…
+## $ availability_90                              &lt;int&gt; 53, 14, 0, 74, 45, 63, 6…
+## $ availability_365                             &lt;int&gt; 143, 193, 0, 345, 135, 3…
+## $ calendar_last_scraped                        &lt;chr&gt; &quot;2020-06-17&quot;, &quot;2020-06-1…
+## $ number_of_reviews                            &lt;int&gt; 134, 229, 271, 305, 27, …
+## $ number_of_reviews_ltm                        &lt;int&gt; 4, 1, 13, 48, 0, 16, 11,…
+## $ first_review                                 &lt;chr&gt; &quot;2011-02-14&quot;, &quot;2011-03-0…
+## $ last_review                                  &lt;chr&gt; &quot;2020-03-24&quot;, &quot;2020-04-1…
+## $ review_scores_rating                         &lt;int&gt; 97, 89, 89, 93, 97, 86, …
+## $ review_scores_accuracy                       &lt;int&gt; 10, 8, 9, 10, 10, 9, 9, …
+## $ review_scores_cleanliness                    &lt;int&gt; 9, 9, 9, 10, 9, 9, 9, 10…
+## $ review_scores_checkin                        &lt;int&gt; 10, 9, 10, 10, 10, 9, 10…
+## $ review_scores_communication                  &lt;int&gt; 10, 9, 10, 10, 10, 9, 10…
+## $ review_scores_location                       &lt;int&gt; 10, 10, 10, 10, 10, 10, …
+## $ review_scores_value                          &lt;int&gt; 9, 9, 9, 9, 10, 9, 9, 10…
+## $ requires_license                             &lt;chr&gt; &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;,…
+## $ license                                      &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, …
+## $ jurisdiction_names                           &lt;lgl&gt; NA, NA, NA, NA, NA, NA, …
+## $ instant_bookable                             &lt;chr&gt; &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;,…
+## $ is_business_travel_ready                     &lt;chr&gt; &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;,…
+## $ cancellation_policy                          &lt;chr&gt; &quot;strict_14_with_grace_pe…
+## $ require_guest_profile_picture                &lt;chr&gt; &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;,…
+## $ require_guest_phone_verification             &lt;chr&gt; &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;,…
+## $ calculated_host_listings_count               &lt;int&gt; 1, 13, 13, 13, 1, 13, 13…
+## $ calculated_host_listings_count_entire_homes  &lt;int&gt; 1, 9, 9, 9, 1, 9, 9, 0, …
+## $ calculated_host_listings_count_private_rooms &lt;int&gt; 0, 4, 4, 4, 0, 4, 4, 1, …
+## $ calculated_host_listings_count_shared_rooms  &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, …
+## $ reviews_per_month                            &lt;dbl&gt; 1.18, 2.02, 2.47, 2.81, …</code></pre>
+<p>Since there are a lot of variables and not all of them are helpful. We create a new dataframe hong_kong_listings with only important variables selected. We also convert characters to doubles and factors where appropriate. In addition, we create a new variable prop_type_simplified so we can easily analyze the different types of accommodation available.</p>
+<pre class="r"><code>hong_kong_listings &lt;- listings %&gt;% 
+  select(id, host_id, host_since,host_is_superhost,host_listings_count,neighbourhood_cleansed,property_type,room_type,
+         accommodates,bathrooms,bedrooms,beds,bed_type,price,security_deposit,cleaning_fee,guests_included,
+         extra_people,minimum_nights,maximum_nights,number_of_reviews,reviews_per_month,number_of_reviews_ltm,review_scores_rating,
+         review_scores_accuracy,review_scores_cleanliness,review_scores_checkin,review_scores_communication,review_scores_location,
+         review_scores_value, cancellation_policy) %&gt;% 
+#Converting characters to &quot;doubles&quot; and factors where appropriate
+  mutate(neighbourhood_cleansed=factor(neighbourhood_cleansed),
+         room_type=as.factor(room_type),
+         price=parse_number(price),
+         security_deposit=parse_number(security_deposit),
+         cleaning_fee=parse_number(cleaning_fee),
+         extra_people=parse_number(extra_people),
+         cancellation_policy=as.factor(cancellation_policy),
+         bed_type=as.factor(bed_type),
+         prop_type_simplified = case_when( 
+         property_type %in% c(&quot;Apartment&quot;,&quot;Hostel&quot;,&quot;Condominium&quot;,&quot;Serviced apartment&quot;, &quot;Hotel&quot;, &quot;Boat&quot;)~ property_type , TRUE ~ &quot;Other&quot;),
+         prop_type_simplified=as.factor(prop_type_simplified))</code></pre>
+<p>Here is a description of some of the key variables in our dataset <em>hong_kong_listings</em>:</p>
+<ul>
+<li><code>price</code> = cost per night</li>
+<li><code>cleaning_fee</code>: cleaning fee</li>
+<li><code>extra_people</code>: charge for having more than 1 person</li>
+<li><code>property_type</code>: type of accommodation (House, Apartment, etc.)</li>
+<li><code>room_type</code>:</li>
+<li>Entire home/apt (guests have entire place to themselves)</li>
+<li>Private room (Guests have private room to sleep, all other rooms shared)</li>
+<li>Shared room (Guests sleep in room shared with others)</li>
+<li><code>number_of_reviews</code>: Total number of reviews for the listing</li>
+<li><code>review_scores_rating</code>: Average review score (0 - 100)</li>
+<li><code>neighbourhood*</code>: three variables on a few major neighbourhoods</li>
+</ul>
+<pre class="r"><code>Property_type_summary &lt;- hong_kong_listings%&gt;%
+  dplyr::group_by(prop_type_simplified)%&gt;%
+  dplyr::summarise(count = n())%&gt;%
+  dplyr::arrange(desc(count))
+
+ggplot(Property_type_summary, aes(x = reorder(prop_type_simplified, count) , y = count)) +
+  geom_bar(stat=&quot;identity&quot;, fill = &quot;steelblue4&quot;) +
+  #theme(axis.text.x = element_text(angle=90)) +
+  theme(plot.title = element_text(face = &quot;bold&quot;)) +
+  labs(x = &quot;Types of Property&quot;, 
+     y = &quot;Number of Properties&quot;, 
+     title = &quot;The different types of Airbnb properties in Hong Kong&quot;) </code></pre>
+<p><img src="/blogs/Airbnb_files/figure-html/property%20types-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>As we can see, most of the properties available in Hong Kong’s Airbnb market are apartments. There are also hotel rooms, condominiums and service apartments. Interestingly, there are also boats available for Airbnb in Hong Kong!</p>
+<div id="popular-districts" class="section level3">
+<h3>Popular Districts</h3>
+<p>Now, let’s look at what districts are the most popular for Airbnb properties.</p>
+<pre class="r"><code>Neighbourhoods_summary &lt;- hong_kong_listings%&gt;%
+  dplyr::group_by(neighbourhood_cleansed)%&gt;%
+  dplyr::summarise(count = n())%&gt;%
+  dplyr::arrange(desc(count))
+
+ggplot(Neighbourhoods_summary, aes(x = reorder(neighbourhood_cleansed,count) , y = count)) +
+  geom_bar(stat=&quot;identity&quot;, fill = &quot;slateblue&quot;) +
+  theme(axis.text.x = element_text(angle=45)) +
+  theme(plot.title = element_text(face = &quot;bold&quot;)) +
+  labs(x = &quot;Districts&quot;, 
+     y = &quot;Number of Properties&quot;, 
+     title = &quot;Number of Properties in Different Districts&quot;) </code></pre>
+<p><img src="/blogs/Airbnb_files/figure-html/property_types_per_neighbourhood-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>Intuitively, we can see that Wanchai, Central &amp; Western and Yau Tsim Mong have the most Airbnb properties. This makes sense because Wanchai, Central &amp; Western and Yau Tsim Mong are home to the two Central Business Districts of Hong Kong and are the most densely populated.</p>
+<p>But what are the types of proprties in these three districts? Are they mostly apartments?</p>
+<pre class="r"><code>district_summary &lt;- hong_kong_listings %&gt;%
+  dplyr::filter(neighbourhood_cleansed == c(&quot;Wan Chai&quot;, &quot;Central &amp; Western&quot;, &quot;Yau Tsim Mong&quot;)) %&gt;% 
+  dplyr::group_by(neighbourhood_cleansed, prop_type_simplified)%&gt;%
+  dplyr::summarise(count = n())%&gt;%
+  dplyr::arrange(desc(count))
+
+ggplot(district_summary, aes(x = reorder(prop_type_simplified, count) , y = count, fill = neighbourhood_cleansed)) +
+  facet_wrap(~neighbourhood_cleansed) +
+  geom_bar(stat=&quot;identity&quot;) +
+  theme(axis.text.x = element_text(angle=45)) +
+  theme(plot.title = element_text(face = &quot;bold&quot;)) +
+  labs(x = &quot;Districts&quot;, 
+     y = &quot;Number of Properties&quot;, 
+     title = &quot;Number of Properties in Different Districts&quot;) </code></pre>
+<p><img src="/blogs/Airbnb_files/figure-html/properties_by_district-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>For all three districts, we see that apartments are indeed the most popular types of Airbnb properties.</p>
+</div>
+<div id="airbnb-ratings-in-the-three-most-popular-districts" class="section level3">
+<h3>Airbnb Ratings in the three most popular districts</h3>
+<p>How are the ratings distributed among the properties of the three most popular districts?</p>
+<pre class="r"><code># Density plot of ratings by zones
+top_3_districts_listings &lt;- hong_kong_listings %&gt;%
+  dplyr::filter(neighbourhood_cleansed == c(&quot;Wan Chai&quot;, &quot;Central &amp; Western&quot;, &quot;Yau Tsim Mong&quot;))
+
+
+ggplot(top_3_districts_listings, aes(x=review_scores_rating, fill=neighbourhood_cleansed, alpha = 0.3))+
+  geom_density()+
+  scale_alpha(guide = &quot;none&quot;) +
+  labs(title = &quot;Density plot of ratings in Wan Chai, Central &amp; Western and Yau Tsim Mong&quot;,
+       x = &quot;Ratings&quot;,
+       y = &quot;Density&quot;) +
+  theme(title = element_text(size = 15, face = &quot;bold&quot;),
+        axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(size = 10),
+        legend.text = element_text(size=10))</code></pre>
+<p><img src="/blogs/Airbnb_files/figure-html/ratings_distribution-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+<div id="how-do-the-prices-differ-between-districts" class="section level3">
+<h3>How do the prices differ between districts?</h3>
+<p>Finally, we analyze how airbnb prices differ in Hong Kong by district by using a box plot</p>
+<pre class="r"><code># Boxplot of log(prices_4_night) by zones
+ggplot(hong_kong_listings,
+       aes(x=neighbourhood_cleansed, y = price,
+           fill = neighbourhood_cleansed, alpha =0.5))+
+  geom_boxplot()+  
+  labs(title = &quot;Boxplot of Total Price for One Night by Districts&quot;,
+       x = &quot;Districts&quot;,
+       y = &quot;Price&quot;) +
+  theme(title = element_text(size = 15, face = &quot;bold&quot;),
+        axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(size = 10),
+        legend.position = &quot;none&quot;) +
+  theme(axis.text.x = element_text(angle=45)) +
+  ylim(0,5000)     </code></pre>
+<p><img src="/blogs/Airbnb_files/figure-html/boxplot_prices-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>Although, Central &amp; Western and Yau Tsim Mong are the most popular districts for Airbnb properties, they do not command the highest prices on average. We instead see that the Southern district has the highest median price for a night. However, we also notice that Central &amp; Western and Yau Tsim Mong have many outliers that command a much higher price than other properties in different districts.</p>
+</div>
+</div>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="https://www.facebook.com/darrenho149" class="icon alt fa-facebook" target="_blank"><span class="label">Facebook</span></a></li>
+                
+                    <li><a href="https://github.com/darrenho149" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/in/darren-ho-332a6498/" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; London Business School</li>
+                
+                <li>Design:  <a href="https://www.html5up.net">HTML5 UP</a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>
