@@ -1,0 +1,152 @@
+---
+categories:
+- ""
+- ""
+date: "2020-10-20"
+description: ""
+draft: false
+image: melting_ice.jpg
+keywords: ""
+slug: climate_change
+title: Climate Change
+---
+
+```{r, setup, echo=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+```{r load-libraries, warning=FALSE, message=FALSE, echo=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(fivethirtyeight)
+library(here)
+library(skimr)
+library(janitor)
+library(vroom)
+library(tidyquant)
+library(tidytext)
+library(rvest)    # scrape websites
+library(purrr)  
+library(lubridate) #to handle dates
+library(plyr)
+library(dplyr)
+library(scales)
+```
+
+Climate Change is the defining issue of our time and we are at the defining moment of our lives. The scope of the impacts of climate change are global and unprecedented in scale and it is our duty to take drastic action today to do as much as we can to protect our environment and keep our planet healthy.
+
+
+## Climate Change: What does the data say?
+
+To this day, there are still many that deny the effect of climate change. But what does the data say? Let's take a look at how temperatures have deviated from normal expected temperatures. 
+Let's look at NASA's data of historical temperature anomalies.
+
+```{r climate_change_data}
+weather <- 
+  read_csv("https://data.giss.nasa.gov/gistemp/tabledata_v3/NH.Ts+dSST.csv", 
+           skip = 1, 
+           na = "***")
+
+weather <- weather %>% 
+  select(Year, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec)
+
+tidyweather <- pivot_longer(weather, cols = 2:13,
+                            names_to = "month",
+                            values_to = "delta"
+)
+
+tidyweather
+```
+
+The variable delta is the temperature deviation from normal expected temperatures determined by NASA.
+
+### Time-Series Scatter Plot
+
+Let's look at the temperature deviations over time 
+
+```{r scatterplot, warning= FALSE}
+
+tidyweather <- tidyweather %>%
+  mutate(date = ymd(paste(as.character(Year), month, "1")),
+         month = month(date, label=TRUE),
+         year = year(date))
+
+ggplot(tidyweather, aes(x=date, y = delta))+
+  geom_point()+
+  geom_smooth(color="red") +
+  theme(plot.title = element_text(face = "bold")) +
+  theme_bw() +
+  labs (
+    title = "Weather Anomalies",
+    x= "Date",
+    y= "Temperature Deviation"
+  )
+
+```
+
+Next, let's analyze if temperature increases are more pronounced in specific months.
+
+```{r deviation_month, warning=FALSE}
+
+p1 <- ggplot(tidyweather, 
+       aes(x=date, 
+           y=delta))+
+  geom_point()+
+  geom_smooth(color="blue")+
+  theme_bw()+
+  theme(plot.title = element_text(face = "bold")) +
+  facet_wrap(~ month, scales="free_y")+
+  labs(title="Temperature Deviation has been increasing for the last 20 years",
+       x="Date",
+       y="Temperature Deviation")
+#adding a horizontal line to see how far off our delta is from the expected value
+ p1+ geom_hline(yintercept=0, color="red")+
+  NULL
+
+```
+
+It is evident that posiitve temperature deviations occur in all months, and are steadily increasing over time!
+
+### Different Time Periods
+
+Let's look at the temperature deviations, if we group the data into five different time periods: 1881-1920, 1921-1950, 1951-1980, 1981-2010 and 2011-present.
+
+```{r time_periods, warning=FALSE}
+
+comparison <- tidyweather %>% 
+  filter(Year>= 1881) %>%     #remove years prior to 1881
+  #create new variable 'interval', and assign values based on criteria below:
+  mutate(interval = case_when(
+    Year %in% c(1881:1920) ~ "1881-1920",
+    Year %in% c(1921:1950) ~ "1921-1950",
+    Year %in% c(1951:1980) ~ "1951-1980",
+    Year %in% c(1981:2010) ~ "1981-2010",
+    TRUE ~ "2011-present"
+  ))
+
+#intervals
+ggplot(comparison, aes(x=delta, fill=interval))+
+  geom_density(alpha=0.2) +   #density plot with tranparency set to 20%
+  theme_bw() +  #theme
+  theme(plot.title = element_text(face = "bold")) +
+  labs (
+    title = "Density Plot for Yearly Temperature Anomalies",
+    y     = "Density" , x = "Temperature Deviation"
+    #changing y-axis label to sentence case
+  )
+
+```

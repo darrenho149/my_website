@@ -5,7 +5,7 @@ categories:
 date: "2020-10-20"
 description: ""
 draft: false
-image: pic10.jpg
+image: Hollywood.jpg
 keywords: ""
 slug: movies
 title: Analysis of Movies - IMDB Dataset
@@ -35,10 +35,126 @@ glimpse(movies)</code></pre>
 ## $ reviews             &lt;int&gt; 3777, 2843, 1934, 2425, 5312, 3917, 1752, 1752, 3…
 ## $ rating              &lt;dbl&gt; 7.9, 7.7, 7.0, 8.1, 9.0, 6.5, 8.7, 7.5, 8.5, 7.2,…</code></pre>
 </div>
+<div id="how-many-movies-of-each-genre-do-we-have" class="section level3">
+<h3>How many movies of each genre do we have?</h3>
+<pre class="r"><code>movies &lt;- movies %&gt;%
+          distinct(title, .keep_all = TRUE)
+
+movies_count &lt;- movies %&gt;% 
+  dplyr::group_by(genre) %&gt;% 
+  dplyr::summarize(Count = n())  
+  
+ggplot(movies_count, aes(x = reorder(genre, Count) , y = Count)) +
+  geom_bar(stat=&quot;identity&quot;, fill = &quot;steelblue4&quot;) +
+  theme(axis.text.x = element_text(angle=90)) +
+  theme(plot.title = element_text(face = &quot;bold&quot;)) +
+  labs(x = &quot;Genres&quot;, 
+     y = &quot;Number of Movies&quot;, 
+     title = &quot;Number of Movies per Genre&quot;) </code></pre>
+<p><img src="/blogs/Movies_files/figure-html/movies_count-1.png" width="648" style="display: block; margin: auto;" /></p>
 </div>
-<div id="including-plots" class="section level2">
-<h2>Including Plots</h2>
-<p>You can also embed plots, for example:</p>
-<p><img src="/blogs/Movies_files/figure-html/pressure-1.png" width="648" style="display: block; margin: auto;" /></p>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+<div id="best-directors-in-the-business" class="section level3">
+<h3>Best Directors in the Business</h3>
+<p>Let’s also look at which directors do best on average in the box office</p>
+<pre class="r"><code>top_15_directors &lt;- movies %&gt;% 
+                    group_by(director) %&gt;% 
+                    dplyr::summarize(total_gross=sum(gross), 
+                              mean_gross=mean(gross), 
+                              median_gross=median(gross), 
+                              sd_gross=sd(gross)) %&gt;% 
+                    arrange(desc(total_gross)) %&gt;% 
+                    head(n=15)
+  
+top_15_directors</code></pre>
+<pre><code>## # A tibble: 15 x 5
+##    director          total_gross mean_gross median_gross   sd_gross
+##    &lt;chr&gt;                   &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;
+##  1 Steven Spielberg   4014061704 174524422.   164435221  101421051.
+##  2 Michael Bay        2195443511 182953626.   168468240. 125789167.
+##  3 James Cameron      1909725910 318287652.   175562880. 309171337.
+##  4 Christopher Nolan  1813227576 226653447    196667606. 187224133.
+##  5 George Lucas       1741418480 348283696    380262555  146193880.
+##  6 Robert Zemeckis    1619309108 124562239.   100853835   91300279.
+##  7 Tim Burton         1557078534 111219895.    69791834   99304293.
+##  8 Sam Raimi          1443167519 180395940.   138480208  174705230.
+##  9 Clint Eastwood     1378321100  72543216.    46700000   75487408.
+## 10 Francis Lawrence   1358501971 271700394.   281666058  135437020.
+## 11 Ron Howard         1335988092 111332341    101587923   81933761.
+## 12 Gore Verbinski     1329600995 189942999.   123207194  154473822.
+## 13 Andrew Adamson     1137446920 284361730    279680930. 120895765.
+## 14 Shawn Levy         1129750988 102704635.    85463309   65484773.
+## 15 Ridley Scott       1128857598  80632686.    47775715   68812285.</code></pre>
+<p>It’s not surprising to see Steven Spielberg top the list with the highest total gross from all movies. It’s also interesting to note that although Christopher Nolan, James Cameron and George Lucas have lower total gross earnings, they have particularly high mean gross earnings! That’s great to know since I am a massive Christopher Nolan and James Cameron fan. Did you get a chance to see Nolan’s new movie TENET? It absolutely blew my mind.</p>
+</div>
+<div id="what-are-the-best-genres" class="section level3">
+<h3>What are the best genres?</h3>
+<p>Let’s also look at how well each genre does with IMDB ratings</p>
+<pre class="r"><code>rating_stat &lt;- movies %&gt;% 
+               group_by(genre) %&gt;% 
+               summarise(mean_rating = mean(rating), 
+                         med_rating = median(rating), 
+                         min_rating = min(rating), 
+                         max_rating = max(rating), 
+                         sd_rating = sd(rating))
+
+rating_hist &lt;- ggplot(movies, aes(x=rating, fill = factor(genre))) +
+                theme(legend.position = &#39;none&#39;) +
+                geom_histogram() +
+                theme(plot.title = element_text(face = &quot;bold&quot;)) +
+                facet_wrap(~genre, scales = &quot;free_y&quot;) +
+                labs(y = &#39;Number of Films&#39;, 
+                     x = &#39;Rating&#39;,
+                     title = &#39;Distribution of Ratings by Genre&#39;)
+
+rating_hist</code></pre>
+<p><img src="/blogs/Movies_files/figure-html/Hist%20by%20genre-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+<div id="would-imdb-ratings-be-a-good-predictor-for-how-well-a-movie-does-in-the-box-office" class="section level3">
+<h3>Would IMDB Ratings be a good predictor for how well a movie does in the box office?</h3>
+<p>Here we examine the relationship between a movie’s gross earnings and its IMDB Rating.</p>
+<pre class="r"><code>ggplot(movies, aes(y = gross, 
+                        x = rating))+ 
+     facet_wrap( ~ genre, scales = &quot;free_y&quot;)+
+     geom_point(alpha=0.3)+ 
+     geom_smooth(method=lm)+
+  theme(plot.title = element_text(face = &quot;bold&quot;)) +
+  labs(y = &#39;Gross Earnings&#39;, 
+                     x = &#39;Rating&#39;,
+                     title = &#39;Gross Earnings vs Ratings by Genre&#39;)</code></pre>
+<p><img src="/blogs/Movies_files/figure-html/gross_on_rating-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>In general, we see that the higher the rating of the movie, the higher the gross earning of the movie. However, it’s puzzling to see the exact oppposite for genres like Documentaries and Sci-Fi movies! From this graph, we actually see that the higher the ratings for these two genres, the lower the rating tends to be if we fit a linear relationship.</p>
+</div>
+<div id="confidence-interval-for-gross-earnings" class="section level3">
+<h3>Confidence Interval for Gross Earnings</h3>
+<p>Finally, let’s create a 95% confidence interval for the 7 most popular movie genres in the IMDB Dataset</p>
+<pre class="r"><code>formula_ci &lt;- movies %&gt;% 
+  filter(genre==c(&quot;Horror&quot;,&quot;Biography&quot;,&quot;Crime&quot;,&quot;Adventure&quot;,&quot;Drama&quot;,&quot;Comedy&quot;,&quot;Action&quot;)) %&gt;% 
+  dplyr::group_by(genre) %&gt;% 
+  dplyr::summarise(min_gross=min(gross),
+            mean_gross=mean(gross),
+            median_gross=median(gross),
+            max_gross=max(gross),
+            sd_gross=sd(gross),
+            count=n(),
+            t_critical = qt(0.975, count-1),
+            se_delta = sd(gross)/sqrt(count),
+            margin_of_error = t_critical * se_delta,
+            delta_low = mean_gross - margin_of_error,
+            delta_high = mean_gross + margin_of_error
+  )
+  
+ggplot(formula_ci, aes(x=reorder(genre,mean_gross), y=mean_gross, colour=genre)) +
+  geom_point() +
+  geom_errorbar(width=.5, aes(ymin=delta_low, ymax=delta_high)) + 
+  labs(x=&quot; &quot;,
+       y= &quot;Gross Earnings&quot;, 
+       title=&quot;95% Confidence Interval for Gross Earnings&quot;) + 
+  theme_bw()+
+  coord_flip()+
+  theme(legend.position = &quot;none&quot;) +
+  theme(plot.title = element_text(face = &quot;bold&quot;)) +
+  scale_y_continuous(labels=scales::dollar_format())</code></pre>
+<p><img src="/blogs/Movies_files/figure-html/confidence%20interval-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>We can see here that the genre Adventure has the highest average gross earnings. We can also see that Comedy has the narrowest interval for it’s confidence interval which could be due to its smaller variance but also the number of movies of the genre in the dataset.</p>
+</div>
 </div>

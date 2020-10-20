@@ -98,10 +98,10 @@ disqusShortname = ""
       url = "blogs/Movies"
 
     [[params.tiles.showcase]]
-      title = "Tempus"
-      subtitle = "Feugiat Amet Tempus"
-      image = "pic02.jpg"
-      url = "blogs/tempus"
+      title = "Climate Change"
+      subtitle = "Let's do something to keep out planet beautiful"
+      image = "Beauty_of_planet_earth.jpg"
+      url = "blogs/climate_change"
 
     [[params.tiles.showcase]]
       title = "Yield Curves"

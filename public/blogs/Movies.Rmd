@@ -5,7 +5,7 @@ categories:
 date: "2020-10-20"
 description: ""
 draft: false
-image: pic10.jpg
+image: Hollywood.jpg
 keywords: ""
 slug: movies
 title: Analysis of Movies - IMDB Dataset
@@ -44,6 +44,7 @@ library(purrr)
 library(lubridate) #to handle dates
 library(plyr)
 library(dplyr)
+library(scales)
 ```
 
 ## Movies
@@ -60,12 +61,131 @@ glimpse(movies)
 
 ```
 
-## Including Plots
+### How many movies of each genre do we have?
 
-You can also embed plots, for example:
+```{r movies_count}
+movies <- movies %>%
+          distinct(title, .keep_all = TRUE)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+movies_count <- movies %>% 
+  dplyr::group_by(genre) %>% 
+  dplyr::summarize(Count = n())  
+  
+ggplot(movies_count, aes(x = reorder(genre, Count) , y = Count)) +
+  geom_bar(stat="identity", fill = "steelblue4") +
+  theme(axis.text.x = element_text(angle=90)) +
+  theme(plot.title = element_text(face = "bold")) +
+  labs(x = "Genres", 
+     y = "Number of Movies", 
+     title = "Number of Movies per Genre") 
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+### Best Directors in the Business
+
+Let's also look at which directors do best on average in the box office 
+
+```{r First 15 by genre}
+
+top_15_directors <- movies %>% 
+                    group_by(director) %>% 
+                    dplyr::summarize(total_gross=sum(gross), 
+                              mean_gross=mean(gross), 
+                              median_gross=median(gross), 
+                              sd_gross=sd(gross)) %>% 
+                    arrange(desc(total_gross)) %>% 
+                    head(n=15)
+  
+top_15_directors
+
+```
+
+It's not surprising to see Steven Spielberg top the list with the highest total gross from all movies.  It's also interesting to note that although Christopher Nolan, James Cameron and George Lucas have lower total gross earnings, they have particularly high mean gross earnings! That's great to know since I am a massive Christopher Nolan and James Cameron fan. Did you get a chance to see Nolan's new movie TENET? It absolutely blew my mind. 
+
+### What are the best genres?
+
+Let's also look at how well each genre does with IMDB ratings
+
+```{r Hist by genre}
+
+rating_stat <- movies %>% 
+               group_by(genre) %>% 
+               summarise(mean_rating = mean(rating), 
+                         med_rating = median(rating), 
+                         min_rating = min(rating), 
+                         max_rating = max(rating), 
+                         sd_rating = sd(rating))
+
+rating_hist <- ggplot(movies, aes(x=rating, fill = factor(genre))) +
+                theme(legend.position = 'none') +
+                geom_histogram() +
+                theme(plot.title = element_text(face = "bold")) +
+                facet_wrap(~genre, scales = "free_y") +
+                labs(y = 'Number of Films', 
+                     x = 'Rating',
+                     title = 'Distribution of Ratings by Genre')
+
+rating_hist
+
+```
+
+### Would IMDB Ratings be a good predictor for how well a movie does in the box office?
+
+Here we examine the relationship between a movie's gross earnings and its IMDB Rating. 
+
+```{r, gross_on_rating, warning=FALSE}
+
+ggplot(movies, aes(y = gross, 
+                        x = rating))+ 
+     facet_wrap( ~ genre, scales = "free_y")+
+     geom_point(alpha=0.3)+ 
+     geom_smooth(method=lm)+
+  theme(plot.title = element_text(face = "bold")) +
+  labs(y = 'Gross Earnings', 
+                     x = 'Rating',
+                     title = 'Gross Earnings vs Ratings by Genre')
+
+```
+
+In general, we see that the higher the rating of the movie, the higher the gross earning of the movie. However, it's puzzling to see the exact oppposite for genres like Documentaries and Sci-Fi movies! From this graph, we actually see that the higher the ratings for these two genres, the lower the rating tends to be if we fit a linear relationship.
+
+### Confidence Interval for Gross Earnings
+
+Finally, let's create a 95% confidence interval for the 7 most popular movie genres in the IMDB Dataset
+
+```{r confidence interval}
+
+formula_ci <- movies %>% 
+  filter(genre==c("Horror","Biography","Crime","Adventure","Drama","Comedy","Action")) %>% 
+  dplyr::group_by(genre) %>% 
+  dplyr::summarise(min_gross=min(gross),
+            mean_gross=mean(gross),
+            median_gross=median(gross),
+            max_gross=max(gross),
+            sd_gross=sd(gross),
+            count=n(),
+            t_critical = qt(0.975, count-1),
+            se_delta = sd(gross)/sqrt(count),
+            margin_of_error = t_critical * se_delta,
+            delta_low = mean_gross - margin_of_error,
+            delta_high = mean_gross + margin_of_error
+  )
+  
+ggplot(formula_ci, aes(x=reorder(genre,mean_gross), y=mean_gross, colour=genre)) +
+  geom_point() +
+  geom_errorbar(width=.5, aes(ymin=delta_low, ymax=delta_high)) + 
+  labs(x=" ",
+       y= "Gross Earnings", 
+       title="95% Confidence Interval for Gross Earnings") + 
+  theme_bw()+
+  coord_flip()+
+  theme(legend.position = "none") +
+  theme(plot.title = element_text(face = "bold")) +
+  scale_y_continuous(labels=scales::dollar_format())
+ 
+
+```
+
+We can see here that the genre Adventure has the highest average gross earnings. We can also see that Comedy has the narrowest interval for it's confidence interval which could be due to its smaller variance but also the number of movies of the genre in the dataset. 
+
+
