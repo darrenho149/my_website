@@ -191,6 +191,5 @@ ggplot(average_annual_anomaly, aes(x=Year, y= annual_average_delta))+
 
 ```
 
-From the above plot, it is also quite evident that from 1960 onwards, there has been an increasing trend in temperature deviations and is slowly reaching an unprecendeted scale. Ler's all work together, play our role, to keep our world a healthy and beautiful place!
+From the above plot, it is also quite evident that from 1960 onwards, there has been an increasing trend in temperature deviations and is slowly reaching an unprecendeted scale. Let's all work together, play our role, to keep our world a healthy and beautiful place!
 
-dadssaaffd
