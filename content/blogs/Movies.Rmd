@@ -1,0 +1,71 @@
+---
+categories:
+- ""
+- ""
+date: "2020-10-20"
+description: ""
+draft: false
+image: pic10.jpg
+keywords: ""
+slug: movies
+title: Analysis of Movies - IMDB Dataset
+---
+
+```{r, setup, echo=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+```{r load-libraries, warning=FALSE, message=FALSE, echo=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(fivethirtyeight)
+library(here)
+library(skimr)
+library(janitor)
+library(vroom)
+library(tidyquant)
+library(tidytext)
+library(rvest)    # scrape websites
+library(purrr)  
+library(lubridate) #to handle dates
+library(plyr)
+library(dplyr)
+```
+
+## Movies
+
+One of my absolute favourite things to do during my pastime is to sit down with my family and friends on a couch and put on a visually mesmerizing, thought provoking movie, with beer and popcorn flowing of course. Thus, I am extremely interested in analyzing movies and understanding all the different factors that come into play in the movie industry. Here, we will look in detail into the different genres of movies from IMDB, and analyze key figures such as their budget, ratings and gross earnings. 
+
+### Let's take a look at the IMDB Movie Dataset
+We can also look at the different variables of the dataset
+
+```{r,load_movies, warning=FALSE, message=FALSE}
+
+movies <- read.csv("~/Desktop/CA09 AUT 20 Data Analytics for Finance/GitHub/my_website/data/movies.csv")
+glimpse(movies)
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

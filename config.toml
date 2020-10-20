@@ -92,10 +92,10 @@ disqusShortname = ""
     # Display your showcases here.
     
     [[params.tiles.showcase]]
-      title = "Yield Curves"
-      subtitle = "Historical Yield Curve Analysis"
+      title = "IMDB Movie Analysis"
+      subtitle = "Who doesn't love movies?"
       image = "pic01.jpg"
-      url = "blogs/YieldCurve"
+      url = "blogs/Movies"
 
     [[params.tiles.showcase]]
       title = "Tempus"
@@ -104,10 +104,10 @@ disqusShortname = ""
       url = "blogs/tempus"
 
     [[params.tiles.showcase]]
-      title = "Magna"
-      subtitle = "Lorem Etiam Nullam"
-      image = "pic03.jpg"
-      url = "blogs/magna"
+      title = "Yield Curves"
+      subtitle = "Historical Yield Curve Analysis"
+      image = "Bull_vs_Bear.jpg"
+      url = "blogs/YieldCurve"
 
     [[params.tiles.showcase]]
       title = "Ipsum"

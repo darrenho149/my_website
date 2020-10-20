@@ -8,6 +8,15 @@
     <language>en-us</language>
     <lastBuildDate>Tue, 20 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Analysis of Movies - IMDB Dataset</title>
+      <link>/blogs/movies/</link>
+      <pubDate>Tue, 20 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/blogs/movies/</guid>
+      <description>Movies One of my absolute favourite things to do during my pastime is to sit down with my family and friends on a couch and put on a visually mesmerizing, thought provoking movie, with beer and popcorn flowing of course. Thus, I am extremely interested in analyzing movies and understanding all the different factors that come into play in the movie industry. Here, we will look in detail into the different genres of movies from IMDB, and analyze key figures such as their budget, ratings and gross earnings.</description>
+    </item>
+    
+    <item>
       <title>Yield Curve Analysis</title>
       <link>/blogs/yieldcurve/</link>
       <pubDate>Tue, 20 Oct 2020 00:00:00 +0000</pubDate>
