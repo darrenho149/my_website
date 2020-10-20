@@ -1,0 +1,360 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="Darren&#39;s description">
+	<meta name="author" content="Darren">
+	<meta name="generator" content="Hugo 0.75.1" />
+	<title>Yield Curve Analysis &middot; Darren</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>Darren</strong> <span></span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/blogs">Blogs</a></li>
+            
+                <li><a href="/blogs/ipsum">Generic Blog</a></li>
+            
+                <li><a href="/elements.html">Elements</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+                <li><a href="/blogs" class="button special fit">Get Started</a></li>
+            
+            
+                <li><a href="/" class="button fit">Log In</a></li>
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>Yield Curve Analysis</h1>
+                            </header>
+                            
+                                <span class="image main"><img src="/img/blogs/pic10.jpg" alt="" /></span>
+                            
+                            
+
+
+<div id="the-yield-curve" class="section level2">
+<h2>The Yield Curve</h2>
+<p>The Yield Curve is simply the difference between short and long-term interest rates. It is important in the world of finance not only because it is used as a benchmark for other debt in the market, such as mortgages or bank lending rates, but also because it can be used to predict changes in economic output and overall growth. Here, we will download and attempt to analyze historical US yield rates of diffent maturities. In addition, we will also specifically track the yield curve, and explore whether the phenomenon of the “inverted yield curve”, where long-term yields are lower than short-term yields, are able to forecast recessions, especially in a time such as the current world pandemic.</p>
+<div id="downloading-monthly-rates-for-historical-yield-curve-rates-for-different-durations" class="section level3">
+<h3>Downloading monthly rates for historical yield curve rates for different durations</h3>
+<pre class="r"><code># Get a list of FRED codes for US rates and US yield curve; choose monthly frequency
+# to see, eg., the 3-month T-bill https://fred.stlouisfed.org/series/TB3MS
+tickers &lt;- c(&#39;TB3MS&#39;, # 3-month Treasury bill (or T-bill)
+             &#39;TB6MS&#39;, # 6-month
+             &#39;GS1&#39;,   # 1-year
+             &#39;GS2&#39;,   # 2-year, etc....
+             &#39;GS3&#39;,
+             &#39;GS5&#39;,
+             &#39;GS7&#39;,
+             &#39;GS10&#39;,
+             &#39;GS20&#39;,
+             &#39;GS30&#39;)  #.... all the way to the 30-year rate
+
+# Turn  FRED codes to human readable variables
+myvars &lt;- c(&#39;3-Month Treasury Bill&#39;,
+            &#39;6-Month Treasury Bill&#39;,
+            &#39;1-Year Treasury Rate&#39;,
+            &#39;2-Year Treasury Rate&#39;,
+            &#39;3-Year Treasury Rate&#39;,
+            &#39;5-Year Treasury Rate&#39;,
+            &#39;7-Year Treasury Rate&#39;,
+            &#39;10-Year Treasury Rate&#39;,
+            &#39;20-Year Treasury Rate&#39;,
+            &#39;30-Year Treasury Rate&#39;)
+
+maturity &lt;- c(&#39;3m&#39;, &#39;6m&#39;, &#39;1y&#39;, &#39;2y&#39;,&#39;3y&#39;,&#39;5y&#39;,&#39;7y&#39;,&#39;10y&#39;,&#39;20y&#39;,&#39;30y&#39;)
+
+# by default R will sort these maturities alphabetically; but since we want
+# to keep them in that exact order, we recast maturity as a factor 
+# or categorical variable, with the levels defined as we want
+maturity &lt;- factor(maturity, levels = maturity)</code></pre>
+<p>We take a look at the list of yields we will peform our analysis on</p>
+<pre class="r"><code># Create a lookup dataset
+mylookup&lt;-data.frame(symbol=tickers,var=myvars, maturity=maturity)
+# Take a look:
+mylookup %&gt;% 
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">symbol</th>
+<th align="left">var</th>
+<th align="left">maturity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">TB3MS</td>
+<td align="left">3-Month Treasury Bill</td>
+<td align="left">3m</td>
+</tr>
+<tr class="even">
+<td align="left">TB6MS</td>
+<td align="left">6-Month Treasury Bill</td>
+<td align="left">6m</td>
+</tr>
+<tr class="odd">
+<td align="left">GS1</td>
+<td align="left">1-Year Treasury Rate</td>
+<td align="left">1y</td>
+</tr>
+<tr class="even">
+<td align="left">GS2</td>
+<td align="left">2-Year Treasury Rate</td>
+<td align="left">2y</td>
+</tr>
+<tr class="odd">
+<td align="left">GS3</td>
+<td align="left">3-Year Treasury Rate</td>
+<td align="left">3y</td>
+</tr>
+<tr class="even">
+<td align="left">GS5</td>
+<td align="left">5-Year Treasury Rate</td>
+<td align="left">5y</td>
+</tr>
+<tr class="odd">
+<td align="left">GS7</td>
+<td align="left">7-Year Treasury Rate</td>
+<td align="left">7y</td>
+</tr>
+<tr class="even">
+<td align="left">GS10</td>
+<td align="left">10-Year Treasury Rate</td>
+<td align="left">10y</td>
+</tr>
+<tr class="odd">
+<td align="left">GS20</td>
+<td align="left">20-Year Treasury Rate</td>
+<td align="left">20y</td>
+</tr>
+<tr class="even">
+<td align="left">GS30</td>
+<td align="left">30-Year Treasury Rate</td>
+<td align="left">30y</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>df &lt;- tickers %&gt;% tidyquant::tq_get(get=&quot;economic.data&quot;, 
+                   from=&quot;1960-01-01&quot;)   # start from January 1960
+yield_curve &lt;-left_join(df,mylookup,by=&quot;symbol&quot;)</code></pre>
+</div>
+<div id="lets-take-a-look-at-yields-on-us-rates-by-duration-since-1960" class="section level3">
+<h3>Let’s take a look at Yields on US rates by duration since 1960</h3>
+<pre class="r"><code>yield_curve %&gt;% 
+mutate(var = factor(var, levels = unique(var))) %&gt;% 
+  #Plotting the graph with years on the x-axis and yields on the y-axis
+ggplot(aes(x = date, y = price, color = as.factor(maturity))) +
+#Facet_wrapping by maturity and var since the levels of maturity are ordered
+    facet_wrap(var~ ., ncol = 2) + 
+#Choosing the plot type to be a line graph
+    geom_line() +
+#Black and white theme
+    theme_bw() +
+#Setting the x-axis labels to be in date format in years
+    scale_x_date(labels=date_format(&quot;%Y&quot;)) +
+#Removing legend and bolding plot title
+    theme(legend.position = &quot;none&quot;, plot.title = element_text(face = &quot;bold&quot;)) +
+#Setting plot and axis titiles
+    labs(y = &#39;%&#39;, 
+         title = &#39;Yields on U.S. Treasury rates since 1960&#39;, 
+         caption = &quot;Source: St. Louis Federal Reserve Economic Database (FRED)&quot;, x = &quot;&quot;) </code></pre>
+<p><img src="/blogs/YieldCurve_files/figure-html/yield_curve_1_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+<div id="we-can-also-look-at-monthly-yields-on-us-rates-by-duration-since-1999-on-a-year-by-year-basis" class="section level3">
+<h3>We can also look at monthly yields on US rates by duration since 1999 on a year-by-year basis</h3>
+<pre class="r"><code>#Creating new data frame with years &gt;= 1999 and new year and month variables
+yield_curve_with_years &lt;- yield_curve %&gt;% 
+  filter(date&gt;=&quot;1999-01-01&quot;) %&gt;% 
+   mutate(year = year(date), month = month(date))
+    
+#Plotting the graph with the different maturities on x-axis, yields on y-axis and grouping the yields by month
+ggplot(yield_curve_with_years, 
+       aes(x = maturity, 
+           y = price, 
+           color = as.factor(year), 
+           group = month)) +
+#Facet wrap the plot by year
+    facet_wrap(~year, ncol = 4) +
+#Choosing the plot to be a line graph 
+    geom_line() +
+#Choosing a black and white theme
+    theme_bw() +
+#Removing plot legend
+    theme(legend.position = &quot;none&quot;) +
+#Setting plot labels
+    labs(y = &#39;Yield (%)&#39;, title = &#39;US Yield Curve&#39;, caption = &quot;Source: St. Louis Federal Reserve Economic Database (FRED)&quot;, x = &quot;Maturity&quot;) +
+#Bolding plot title
+    theme(plot.title = element_text(face = &quot;bold&quot;))</code></pre>
+<p><img src="/blogs/YieldCurve_files/figure-html/yield_curve_2_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+<div id="finally-we-look-at-the-yield-curve-by-calculating-the-spread-between-the-10-year-and-3-month-yields" class="section level3">
+<h3>Finally, we look at the yield curve by calculating the spread between the 10-year and 3-month yields</h3>
+<p>To add more context to our yield curve plot, we can also visualize the past recessions to see if there is a pattern. We look at the dates of the recessions from wikipedia and create a dataframe with all US recessions since 1946.</p>
+<pre class="r"><code># get US recession dates after 1946 from Wikipedia 
+# https://en.wikipedia.org/wiki/List_of_recessions_in_the_United_States
+
+recessions &lt;- tibble(
+  from = c(&quot;1948-11-01&quot;, &quot;1953-07-01&quot;, &quot;1957-08-01&quot;, &quot;1960-04-01&quot;, &quot;1969-12-01&quot;, &quot;1973-11-01&quot;, &quot;1980-01-01&quot;,&quot;1981-07-01&quot;, &quot;1990-07-01&quot;, &quot;2001-03-01&quot;, &quot;2007-12-01&quot;),  
+  to = c(&quot;1949-10-01&quot;, &quot;1954-05-01&quot;, &quot;1958-04-01&quot;, &quot;1961-02-01&quot;, &quot;1970-11-01&quot;, &quot;1975-03-01&quot;, &quot;1980-07-01&quot;, &quot;1982-11-01&quot;, &quot;1991-03-01&quot;, &quot;2001-11-01&quot;, &quot;2009-06-01&quot;) 
+  )  %&gt;% 
+  mutate(From = ymd(from), 
+         To=ymd(to),
+         duration_days = To-From)
+
+recessions</code></pre>
+<pre><code>## # A tibble: 11 x 5
+##    from       to         From       To         duration_days
+##    &lt;chr&gt;      &lt;chr&gt;      &lt;date&gt;     &lt;date&gt;     &lt;drtn&gt;       
+##  1 1948-11-01 1949-10-01 1948-11-01 1949-10-01 334 days     
+##  2 1953-07-01 1954-05-01 1953-07-01 1954-05-01 304 days     
+##  3 1957-08-01 1958-04-01 1957-08-01 1958-04-01 243 days     
+##  4 1960-04-01 1961-02-01 1960-04-01 1961-02-01 306 days     
+##  5 1969-12-01 1970-11-01 1969-12-01 1970-11-01 335 days     
+##  6 1973-11-01 1975-03-01 1973-11-01 1975-03-01 485 days     
+##  7 1980-01-01 1980-07-01 1980-01-01 1980-07-01 182 days     
+##  8 1981-07-01 1982-11-01 1981-07-01 1982-11-01 488 days     
+##  9 1990-07-01 1991-03-01 1990-07-01 1991-03-01 243 days     
+## 10 2001-03-01 2001-11-01 2001-03-01 2001-11-01 245 days     
+## 11 2007-12-01 2009-06-01 2007-12-01 2009-06-01 548 days</code></pre>
+<p>We then plot our yield curve graph. The grey areas in our plot refer to the recessions. The ribbons on our plot indicate whether the spread (10year - 3-month) is positive or negative.</p>
+<pre class="r"><code>#Creating new data frame with only 3m and 10y maturities, pivoting wider and creating a new variable difference
+yield_curve_final &lt;- yield_curve %&gt;% 
+  filter((maturity == &quot;3m&quot; | maturity == &quot;10y&quot;)) %&gt;% 
+  select(c(&quot;date&quot;,&quot;price&quot;,&quot;var&quot;)) %&gt;%
+  pivot_wider(names_from = &quot;var&quot;, values_from = &quot;price&quot;) %&gt;% 
+  mutate(difference=`10-Year Treasury Rate` - `3-Month Treasury Bill`)
+
+#Plotting graph with date on the x-axis and the difference on the y-axis
+ggplot(yield_curve_final, aes(x=date, y=difference)) +
+#Choosing plot to be a line graph  
+  geom_line() +
+#Creating title and labels for graph
+    labs(y = &#39;Difference (10 year-3 month) yield in %&#39;, title = &#39;Yield Curve Inversion: 10-year minus 3-month U.S. Treasury Rates&#39;, 
+      caption = &quot;Source: St. Louis Federal Reserve Economic Database (FRED)&quot;, 
+      subtitle = &quot;Difference in % points, monthly averages. \nShaded areas correspond to recessions&quot;, x=&quot;&quot;) +
+#Selecting black and white theme
+  theme_bw() +
+#Fixing x-axis labels and limits
+  scale_x_date(date_breaks=&quot;5 years&quot;,labels=date_format(&quot;%Y&quot;), limits = c(as.Date(&quot;1959-01-01&quot;),as.Date(&quot;2023-01-01&quot;))) +
+#Bolding plot title and removing legend
+  theme(plot.title = element_text(face = &quot;bold&quot;), legend.position = &quot;none&quot;) +
+#Creating y-intercept line at 0
+  geom_hline(yintercept=0,color=&quot;black&quot;) +
+#Creating rugs at bottom of plot
+  #geom_rug(aes(colour=ifelse(difference &gt;= 0,&quot;steelblue2&quot;,&quot;red&quot;)), sides=&quot;b&quot;,alpha=0.5, position = &quot;jitter&quot;) +
+#Plotting the recession grey areas on plot
+  geom_rect(data=filter(recessions), inherit.aes=F, aes(xmin=From, xmax=To, ymin=-Inf, ymax=+Inf), fill=&#39;grey&#39;, alpha=0.7) +
+#Plotting graph ribbons
+  geom_ribbon(aes(ymin = difference, ymax = pmin(difference, 0)), fill= &quot;steelblue2&quot;, alpha=0.5) +
+  geom_ribbon(aes(ymin = 0, ymax = pmin(difference, 0)),fill = &quot;red&quot;, alpha=0.5)</code></pre>
+<p><img src="/blogs/YieldCurve_files/figure-html/yield_curve_challenge_plot-1.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>From the above plot, we can see that in six out of the seven times the yield curve inverts before 2020, a recession follows. This occurs in 1969, 1973, 1980, 1981, 2001 and 2007. In 2020, we once again see the yield curve invert. Is this a sign of a looming recession ahead?</p>
+</div>
+</div>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="https://www.facebook.com/darrenho149" class="icon alt fa-facebook" target="_blank"><span class="label">Facebook</span></a></li>
+                
+                    <li><a href="https://github.com/darrenho149" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/in/darren-ho-332a6498/" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; Company Name</li>
+                
+                <li>Design:  <a href="https://www.html5up.net">HTML5 UP</a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>

@@ -92,10 +92,10 @@ disqusShortname = ""
     # Display your showcases here.
     
     [[params.tiles.showcase]]
-      title = "Aliquam"
-      subtitle = "Ipsum Dolor Sit Amet"
+      title = "Yield Curves"
+      subtitle = "Historical Yield Curve Analysis"
       image = "pic01.jpg"
-      url = "blogs/aliquam"
+      url = "blogs/YieldCurve"
 
     [[params.tiles.showcase]]
       title = "Tempus"
@@ -115,17 +115,17 @@ disqusShortname = ""
       image = "pic04.jpg"
       url = "blogs/ipsum"
 
-    [[params.tiles.showcase]]
-      title = "Consequat"
-      subtitle = "Ipsum Dolor Sit Amet"
-      image = "pic05.jpg"
-      url = "blogs/ipsum"
+    #[[params.tiles.showcase]]
+      #title = "Consequat"
+      #subtitle = "Ipsum Dolor Sit Amet"
+      #image = "pic05.jpg"
+      #url = "blogs/ipsum"
 
-    [[params.tiles.showcase]]
-      title = "Etiam"
-      subtitle = "Feugiat Amet Tempus"
-      image = "pic06.jpg"
-      url = "blogs/ipsum"
+    #[[params.tiles.showcase]]
+      #title = "Etiam"
+      #subtitle = "Feugiat Amet Tempus"
+      #image = "pic06.jpg"
+      #url = "blogs/ipsum"
     # You can make more showcases by copy and pasting the code above
 
   [params.blog]
@@ -200,10 +200,10 @@ disqusShortname = ""
       url= "https://www.facebook.com/darrenho149"
       label = "Facebook"
 
-    [[params.footer.social]]
-      icon = "fa-instagram"
-      url= "https://www.instagram.com/darrenho149/?hl=en"
-      label = "Instagram"
+    #[[params.footer.social]]
+      #icon = "fa-instagram"
+      #url= "https://www.instagram.com/darrenho149/?hl=en"
+      #label = "Instagram"
     
     [[params.footer.social]]
       icon = "fa-github"
@@ -212,7 +212,7 @@ disqusShortname = ""
 
     [[params.footer.social]]
       icon = "fa-linkedin"
-      url= "https://www.linkedin.com"
+      url= "https://www.linkedin.com/in/darren-ho-332a6498/"
       label = "LinkedIn"
 
     [[params.footer.quicklinks]]

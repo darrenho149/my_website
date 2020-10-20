@@ -6,7 +6,16 @@
     <description>Recent content on Darren</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 31 Oct 2017 22:42:51 -0500</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 20 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Yield Curve Analysis</title>
+      <link>/blogs/yieldcurve/</link>
+      <pubDate>Tue, 20 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/blogs/yieldcurve/</guid>
+      <description>The Yield Curve The Yield Curve is simply the difference between short and long-term interest rates. It is important in the world of finance not only because it is used as a benchmark for other debt in the market, such as mortgages or bank lending rates, but also because it can be used to predict changes in economic output and overall growth. Here, we will download and attempt to analyze historical US yield rates of diffent maturities.</description>
+    </item>
+    
     <item>
       <title>Aliquam</title>
       <link>/blogs/aliquam/</link>
